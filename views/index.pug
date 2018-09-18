@@ -1,5 +1,21 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  <h1>Whisper Protocol</h1>
+  <div class="form-row">
+      <div class="form-group">
+        <label>Topic : </label>
+        <label>#{topic}</label>
+      </div>
+  </div>
+  <div class="form-row" style="min-height:200px; border:1px solid grey; margin: 10px 0">
+      <div id="log" style="padding: 0 20px">
+      </div>
+  </div>
+  <div class="form-row">
+      <div class="form-group">
+        <label for="payload">Message</label>
+        <textarea id="payload" class="form-control"></textarea>
+      </div>
+      <button type="button" name="button" id="send_btn" class="btn btn-primary">SEND</button>
+  </div>
