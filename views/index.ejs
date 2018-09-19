@@ -9,8 +9,16 @@
     <h1>Whisper Protocol</h1>
     <div class="form-row">
         <div class="form-group">
-          <label>Topic : </label>
+          <label>Topic :</label>
           <label><%= topic %></label>
+        </div>
+        <div class="form-group asym">
+            <label>My public key:</label>
+            <label id="pubKey"></label>
+        </div>
+        <div class="form-group asym">
+            <label>Recipient's public key To Send msg to him : </label>
+            <input type="text" id="recipientKey">
         </div>
     </div>
     <div class="form-row" style="min-height:200px; border:1px solid grey; margin: 10px 0">
@@ -35,10 +43,23 @@
       var encryptionType = '<%=encryptionType%>';
       var topic = '<%=topic%>';
 
+      if(encryptionType == "sym"){
+        $(".asym").hide();
+      }
+
       var whisper = new Whisper("http://localhost:8545",encryptionType,password,nickName,topic);
       whisper.setTextArea($('#log'));
+      whisper.setAsymPubKeyLabel($("#pubKey"));
       
-      $("#send_btn").click(function(){ whisper.sendMessage($('#payload').val());$('#payload').val(''); });
+      $("#send_btn").click(function(){
+        if(encryptionType == "sym"){
+          whisper.sendMessage($('#payload').val());
+        }else{
+          whisper.sendMessage($('#payload').val(),$('#recipientKey').val());
+        }
+
+        $('#payload').val(''); 
+        });
 
 
     });

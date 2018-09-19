@@ -11,7 +11,7 @@ class Whisper {
         this.msgs = [];
 
         if(encryptionType == "asym"){
-
+            this.generateAsymKey();
         }else if(encryptionType == "sym"){
             this.generateSymKey();
         }else{
@@ -24,6 +24,36 @@ class Whisper {
         this.textArea = textArea;
     }
 
+    generateAsymKey(){
+        let data = {
+			msgs: [],
+			text: "",
+			symKeyId: null,
+			name: "",
+			asymKeyId: null,
+			sympw: "",
+			asym: true,
+			configured: false,
+			topic: this.topic ,
+			recipientPubKey: "",
+			asymPubKey: ""
+		};
+
+		this.shh.newKeyPair().then(id => {
+            data.asymKeyId = id;
+            this.asymKeyId = id;
+			return this.shh.getPublicKey(id).then(pubKey => {
+                this.asymPubKey = pubKey;
+                this.asymPubKeyLabel.text(pubKey)
+                this.registerTopic();
+            }).catch(console.log);
+		}).catch(console.log);
+    }
+
+    setAsymPubKeyLabel(asymPubKeyLabel){
+        this.asymPubKeyLabel = asymPubKeyLabel;
+    }
+
     generateSymKey(){
         this.shh.generateSymKeyFromPassword(this.password).then(symKeyID => {
             this.symKeyId = symKeyID;
@@ -31,7 +61,7 @@ class Whisper {
         })
     }
 
-    sendMessage(text) {
+    sendMessage(text,pubKey = "") {
         let msg = {
             text: text,
             nickName: this.nickName
@@ -46,11 +76,15 @@ class Whisper {
         };
 
         if(this.encryptionType == "asym") {
-            postData.pubKey = this.recipientPubKey;
+            postData.pubKey = pubKey;
             postData.sig = this.asymKeyId;
+            if(pubKey == "") {
+                alert("Please enter  key");
+            return;
+        }
         } else{
             postData.symKeyID = this.symKeyId;
-        }
+        }console.log(postData)
         this.shh.post(postData);
 
     }
