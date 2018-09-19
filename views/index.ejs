@@ -26,4 +26,21 @@
     </div>
   </body>
   <script src="/javascripts/whisper.js"></script>
+  <script src="/javascripts/hexutils.js"></script>
+
+  <script>
+    $( document ).ready(function() {      
+      var nickName = '<%=nickName%>';
+      var password = '<%=password%>';
+      var encryptionType = '<%=encryptionType%>';
+      var topic = '<%=topic%>';
+
+      var whisper = new Whisper("http://localhost:8545",encryptionType,password,nickName,topic);
+      whisper.setTextArea($('#log'));
+      
+      $("#send_btn").click(function(){ whisper.sendMessage($('#payload').val());$('#payload').val(''); });
+
+
+    });
+  </script>
 </html>
